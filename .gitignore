@@ -1,0 +1,12 @@
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
