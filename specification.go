@@ -47,8 +47,15 @@ func OrSpecification[T any](specs ...Specification[T]) Specification[T] {
 	return &orSpecification[T]{specs: specs}
 }
 
+// OrSpecificationWithCreate holds a slice of specifications and run each of them for Validate and Create methods.
+// Fails if *all* specifications failed.
+func OrSpecificationWithCreate[T any](specs ...Specification[T]) Specification[T] {
+	return &orSpecification[T]{specs: specs, useCreate: true}
+}
+
 type orSpecification[T any] struct {
-	specs []Specification[T]
+	specs     []Specification[T]
+	useCreate bool
 }
 
 // Validate returns error if Validate method of *all* specification returns error.
@@ -67,6 +74,20 @@ func (o *orSpecification[T]) Validate(item *T) error {
 }
 
 // Create is a no-op method.
-func (o *orSpecification[T]) Create(*T) error {
+func (o *orSpecification[T]) Create(item *T) error {
+	if o.useCreate {
+		errs := internal.NewMultierr().WithCap(len(o.specs))
+
+		for _, spec := range o.specs {
+			if err := spec.Validate(item); err != nil {
+				errs.Append(err)
+			} else {
+				return nil
+			}
+		}
+
+		return errs
+	}
+
 	return nil
 }
