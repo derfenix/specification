@@ -71,7 +71,7 @@ func (m *mustIDSpecification) Create(account *Account) error {
 
 // Domain service
 
-var defaultSpecification = specification.NewAndSpecification[Account](
+var defaultSpecification = specification.AndSpecification[Account](
 	MustIDSpecification(
 		func() string {
 			return "fixed_id"

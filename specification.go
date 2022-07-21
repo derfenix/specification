@@ -13,9 +13,16 @@ type andSpecification[T any] struct {
 	specs []Specification[T]
 }
 
-// NewAndSpecification holds a slice of specifications and run each of them for Create and Validate methods.
-// Fails if *any* specification failed.
+// NewAndSpecification
+//
+// Deprecated: use AndSpecification instead
 func NewAndSpecification[T any](specs ...Specification[T]) Specification[T] {
+	return AndSpecification[T](specs...)
+}
+
+// AndSpecification holds a slice of specifications and run each of them for Create and Validate methods.
+// Fails if *any* specification failed.
+func AndSpecification[T any](specs ...Specification[T]) Specification[T] {
 	return &andSpecification[T]{specs: specs}
 }
 
